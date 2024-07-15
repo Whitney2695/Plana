@@ -1,0 +1,42 @@
+### Create User (POST /api/users)
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "email": "whitneynavalia@gmail.com",
+  "password": "password123",
+  "name": "Whitney Navalia",
+  "phoneNumber": "078436230",
+  "image": "avatar.jpg",
+  "isAdmin": false,
+  "isManager": true
+}
+
+### Get All Users (GET /api/users)
+GET http://localhost:3000/api/users
+
+### Get User by ID (GET /api/users/:id)
+GET http://localhost:3000/api/users/22c4744f-983a-4d47-8be8-4c92710968ed
+
+### Update User by ID (PUT /api/users/:id)
+PUT http://localhost:3000/api/users/d5574577-940a-4dd1-835a-162c802fcbec
+Content-Type: application/json
+
+{
+  "email": "updated.john.doe@example.com",
+  "name": "Updated John Doe",
+  "phoneNumber": "+9876543210",
+  "isAdmin": true,
+  "isManager": false
+}
+
+### Delete User by ID (DELETE /api/users/:id)
+DELETE http://localhost:3000/api/users/0f9b2a90-b2e9-4a62-9d1d-81f0854b2553
+### Get Only Users (GET /api/users/role/users)
+GET http://localhost:3000/api/users/role/users
+
+### Get Only Admins (GET /api/users/role/admins)
+GET http://localhost:3000/api/users/role/admins
+
+### Get Only Managers (GET /api/users/role/managers)
+GET http://localhost:3000/api/users/role/managers

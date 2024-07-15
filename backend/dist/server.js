@@ -22,20 +22,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.prisma = void 0;
 const express_1 = __importStar(require("express"));
-// import cors from 'cors';
-// import user_router from './routes/user.router';
-// import post_router from './routes/post.router';
-// import auth_router from './routes/auth.router';
-// import comment_router from './routes/comment.router';
+const cors_1 = __importDefault(require("cors"));
+const client_1 = require("@prisma/client");
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const eventRoutes_1 = __importDefault(require("./routes/eventRoutes"));
+const ticketRoutes_1 = __importDefault(require("./routes/ticketRoutes"));
 const app = (0, express_1.default)();
+exports.prisma = new client_1.PrismaClient();
 app.use((0, express_1.json)());
-// app.use(cors());
-// app.use('/user', user_router);
-// app.use('/post', post_router);
-// app.use('/auth', auth_router);
-// app.use('/comment', comment_router);
+app.use((0, cors_1.default)());
+app.use('/api/auth', authRoutes_1.default);
+app.use('/api/users', userRoutes_1.default);
+app.use('/api', eventRoutes_1.default);
+app.use('/tickets', ticketRoutes_1.default);
 app.use((err, req, res, next) => {
     res.json({
         message: err.message

@@ -12,3 +12,97 @@ datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id                String      @id @default(uuid())
+  email             String      @unique
+  password          String
+  name              String?
+  phoneNumber       String?
+  image             String?
+  isActive          Boolean     @default(true)
+  isAdmin           Boolean     @default(false)
+  isManager         Boolean     @default(false)
+  activationCode    String?
+  activationExpires DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  tickets           Ticket[]    @relation("UserToTicket")
+  bookings          Booking[]   @relation("UserToBooking")
+}
+
+model Event {
+  id                String      @id @default(uuid())
+  title             String
+  description       String
+  category          String
+  location          String
+  price             Float
+  ticketsAvailable  Int
+  date              DateTime
+  imageUrl          String?
+  tickets           Ticket[]    @relation("EventToTicket")
+  bookings          Booking[]   @relation("EventToBooking")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Booking {
+  id                String      @id @default(uuid())
+  user              User        @relation("UserToBooking", fields: [userId], references: [id])
+  userId            String
+  event             Event       @relation("EventToBooking", fields: [eventId], references: [id])
+  eventId           String
+  ticketCount       Int
+  totalPrice        Float
+  status            String      @default("pending")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([userId], name: "Booking_userId_index")
+  @@index([eventId], name: "Booking_eventId_index")
+}
+
+model Ticket {
+  id                String      @id @default(uuid())
+  user              User        @relation("UserToTicket", fields: [userId], references: [id])
+  userId            String
+  event             Event       @relation("EventToTicket", fields: [eventId], references: [id])
+  eventId           String
+  ticketCount       Int
+  imageUrl          String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([userId], name: "Ticket_userId_index")
+  @@index([eventId], name: "Ticket_eventId_index")
+}
+
+// model Statistics {
+//   id                   String      @id @default(uuid())
+//   totalUsers           Int
+//   totalAttendees       Int
+//   totalEvents          Int
+//   eventsByManager      Int
+//   eventsByAllManagers  Int
+//   createdAt            DateTime    @default(now())
+//   updatedAt            DateTime    @updatedAt
+// }
+
+// model Attendee {
+//   id           String    @id @default(uuid())
+//   name         String
+//   email        String
+//   phoneNumber  String?
+//   numberOfTickets Int
+//   totalPrice   Float
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+
+//   // Define relation to User model if needed
+//   user         User      @relation(fields: [userId], references: [id])
+//   userId       String
+// }
+
+// // //Define relations if needed
+// // users                User[]      @relation("UserToAttendees")

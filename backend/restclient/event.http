@@ -1,0 +1,54 @@
+@eventId = 12345678-1234-1234-1234-123456789012
+@userId = 87654321-4321-4321-4321-210987654321
+
+### Create Event
+POST http://localhost:3000/api/events
+Content-Type: application/json
+
+{
+  "title": "Concert",
+  "description": "Live music event",
+  "category": "Music",
+  "location": "Stadium",
+  "price": 50,
+  "ticketsAvailable": 100,
+  "date": "2024-12-31T23:59:59.000Z",
+  "imageUrl": "http://example.com/image.jpg"
+}
+
+### Get All Events
+GET http://localhost:3000/api/events
+
+### Get Event by ID
+GET http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
+
+### Update Event
+PUT http://localhost:3000/api/events/6c81c31e-337a-40a1-95f8-908dcfbf7cbd
+Content-Type: application/json
+
+{
+  "title": "Updated Concert",
+  "description": "Updated live music event",
+  "category": "Music",
+  "location": "Stadium",
+  "price": 60,
+  "ticketsAvailable": 90,
+  "date": "2024-12-31T23:59:59.000Z",
+  "imageUrl": "http://example.com/new-image.jpg"
+}
+
+### Delete Event
+DELETE http://localhost:3000/api/events/bee6d009-c4da-46dd-ab91-bb79d02667d1
+
+### Book Ticket
+POST http://localhost:3000/api/events/book
+Content-Type: application/json
+
+{
+  "eventId": "2bca9aa8-408c-4e8e-97c3-00fd49c2a317",
+  "userId": "35299e63-6fc7-4cb1-afc4-e67e1cea88c9",
+  "ticketCount": 2
+}
+
+### Calculate Earnings
+GET http://localhost:3000/api/events/<eventId>/earnings

@@ -1,0 +1,15 @@
+### buy ticket
+POST http://localhost:3000/tickets/buy
+Content-Type: application/json
+
+{
+  "userId": "35299e63-6fc7-4cb1-afc4-e67e1cea88c9",
+  "eventId": "2bca9aa8-408c-4e8e-97c3-00fd49c2a317",
+  "ticketCount": 30
+}
+
+### cancel ticket
+DELETE http://localhost:3000/tickets/cancel/77927554-4a3b-4572-8dca-c974035074f2
+
+### All tickets
+GET http://localhost:3000/tickets/user/35299e63-6fc7-4cb1-afc4-e67e1cea88c9
