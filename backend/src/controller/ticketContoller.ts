@@ -18,12 +18,11 @@ export class TicketController {
 
     try {
       const canceledTicket = await TicketService.cancelTicket(ticketId);
-      res.json({ message: `Ticket successfully canceled.` }); // Return success message
+      res.json({ message: "Ticket successfully canceled." }); // Return success message
     } catch (error) {
       next(error);
     }
   }
-
 
   static async getAllTicketsForUser(req: Request, res: Response, next: NextFunction) {
     const { userId } = req.params;
@@ -31,6 +30,26 @@ export class TicketController {
     try {
       const tickets = await TicketService.getAllTicketsForUser(userId);
       res.json(tickets);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getUsersForEvent(req: Request, res: Response, next: NextFunction) {
+    const { eventId } = req.params;
+
+    try {
+      const users = await TicketService.getUsersForEvent(eventId);
+      res.json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getAllUsersWithTickets(req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await TicketService.getAllUsersWithTickets();
+      res.json(users);
     } catch (error) {
       next(error);
     }

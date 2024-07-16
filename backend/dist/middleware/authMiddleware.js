@@ -9,7 +9,7 @@ const jwtSecret = 'pass'; // Replace with your actual secret
 function authMiddleware(req, res, next) {
     var _a;
     // Get token from headers
-    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[0];
     if (!token) {
         return res.status(401).json({ error: 'Authorization token is missing' });
     }

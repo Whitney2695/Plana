@@ -1,0 +1,2 @@
+### Get all bookings for an event
+GET http://localhost:3000/bookings/bookings/2bca9aa8-408c-4e8e-97c3-00fd49c2a317

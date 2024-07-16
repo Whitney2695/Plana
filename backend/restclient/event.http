@@ -4,6 +4,7 @@
 ### Create Event
 POST http://localhost:3000/api/events
 Content-Type: application/json
+Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjU5ODJjNi00ZDQ5LTQ2ZTEtYTY0OS1jZDAwNDA5YjY4MzciLCJpYXQiOjE3MjExMjI1MzksImV4cCI6MTcyMTEyNjEzOX0.lMLbidx6O2SLNsdz6qs_FK_9-6o56Yr0_sJvZ0HSIo8
 
 {
   "title": "Concert",
@@ -23,9 +24,9 @@ GET http://localhost:3000/api/events
 GET http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
 
 ### Update Event
-PUT http://localhost:3000/api/events/6c81c31e-337a-40a1-95f8-908dcfbf7cbd
+PUT http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
 Content-Type: application/json
-
+Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjU5ODJjNi00ZDQ5LTQ2ZTEtYTY0OS1jZDAwNDA5YjY4MzciLCJpYXQiOjE3MjExMjI1MzksImV4cCI6MTcyMTEyNjEzOX0.lMLbidx6O2SLNsdz6qs_FK_9-6o56Yr0_sJvZ0HSIo8
 {
   "title": "Updated Concert",
   "description": "Updated live music event",
@@ -38,7 +39,8 @@ Content-Type: application/json
 }
 
 ### Delete Event
-DELETE http://localhost:3000/api/events/bee6d009-c4da-46dd-ab91-bb79d02667d1
+DELETE http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
+Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjU5ODJjNi00ZDQ5LTQ2ZTEtYTY0OS1jZDAwNDA5YjY4MzciLCJpYXQiOjE3MjExMjI1MzksImV4cCI6MTcyMTEyNjEzOX0.lMLbidx6O2SLNsdz6qs_FK_9-6o56Yr0_sJvZ0HSIo8
 
 ### Book Ticket
 POST http://localhost:3000/api/events/book
@@ -51,4 +53,4 @@ Content-Type: application/json
 }
 
 ### Calculate Earnings
-GET http://localhost:3000/api/events/<eventId>/earnings
+GET http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317/earnings

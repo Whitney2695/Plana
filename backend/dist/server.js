@@ -34,6 +34,7 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const eventRoutes_1 = __importDefault(require("./routes/eventRoutes"));
 const ticketRoutes_1 = __importDefault(require("./routes/ticketRoutes"));
+const bookingRoutes_1 = __importDefault(require("./routes/bookingRoutes"));
 const app = (0, express_1.default)();
 exports.prisma = new client_1.PrismaClient();
 app.use((0, express_1.json)());
@@ -42,6 +43,7 @@ app.use('/api/auth', authRoutes_1.default);
 app.use('/api/users', userRoutes_1.default);
 app.use('/api', eventRoutes_1.default);
 app.use('/tickets', ticketRoutes_1.default);
+app.use('/bookings', bookingRoutes_1.default);
 app.use((err, req, res, next) => {
     res.json({
         message: err.message

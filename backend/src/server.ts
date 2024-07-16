@@ -5,6 +5,8 @@ import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import eventRoutes from './routes/eventRoutes';
 import ticketRoutes from './routes/ticketRoutes';
+import bookingRoutes from './routes/bookingRoutes';
+
 
 const app = express();
 export const prisma = new PrismaClient();
@@ -17,6 +19,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api', eventRoutes);
 app.use('/tickets', ticketRoutes);
+app.use('/bookings', bookingRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.json({
