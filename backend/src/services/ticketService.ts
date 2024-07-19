@@ -1,135 +1,103 @@
-import { PrismaClient } from '@prisma/client';
-import nodemailer from 'nodemailer';
+// services/ticketService.ts
 
-const prisma = new PrismaClient();
+import { prisma } from '../server';
+import { TicketEmailService } from '../utils/ticketEmail'; // Adjust the import path as necessary
 
 export class TicketService {
   static async buyTicket(userId: string, eventId: string, ticketCount: number) {
-    const event = await prisma.event.findUnique({
-      where: { id: eventId },
-      select: { id: true, ticketsAvailable: true, price: true }
-    });
+    try {
+      // Create a new ticket entry in the database
+      const ticket = await prisma.ticket.create({
+        data: {
+          userId,
+          eventId,
+          ticketCount,
+        },
+      });
 
-    if (!event) {
-      throw new Error(`Event with ID ${eventId} not found.`);
-    }
+      // Calculate the total amount (e.g., $10 per ticket)
+      const totalAmount = ticketCount * 10;
 
-    if (event.ticketsAvailable < ticketCount) {
-      throw new Error(`Not enough tickets available for event.`);
-    }
+      // Fetch user email based on userId
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) throw new Error('User not found');
 
-    const ticket = await prisma.ticket.create({
-      data: {
-        userId,
-        eventId,
-        ticketCount,
+      // Send email notification
+      await TicketEmailService.sendTicketPurchaseEmail(user.email, ticketCount, totalAmount);
+
+      return { ticket, totalAmount };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to buy ticket: ${error.message}`);
+      } else {
+        throw new Error('Failed to buy ticket: Unknown error');
       }
-    });
-
-    const totalAmount = ticketCount * event.price;
-
-    // Fetch user details
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { email: true, name: true }
-    });
-
-    if (!user) {
-      throw new Error(`User with ID ${userId} not found.`);
     }
-
-    // Check if user has an email address
-    if (!user.email) {
-      throw new Error('User email address is not provided.');
-    }
-
-    // Send confirmation email
-    await TicketService.sendConfirmationEmail(user.email, user?.name, ticketCount, totalAmount);
-
-    return { ticket, totalAmount };
   }
 
   static async cancelTicket(ticketId: string) {
-    const ticket = await prisma.ticket.findUnique({
-      where: { id: ticketId }
-    });
-    if (!ticket) {
-      throw new Error(`Ticket with ID ${ticketId} not found.`);
+    try {
+      // Delete the ticket entry from the database
+      await prisma.ticket.delete({
+        where: { id: ticketId },
+      });
+      return { message: 'Ticket successfully canceled.' };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to cancel ticket: ${error.message}`);
+      } else {
+        throw new Error('Failed to cancel ticket: Unknown error');
+      }
     }
-
-    await prisma.ticket.delete({
-      where: { id: ticketId }
-    });
-
-    return ticket;
   }
 
   static async getAllTicketsForUser(userId: string) {
-    const tickets = await prisma.ticket.findMany({
-      where: { userId },
-      include: {
-        event: true
+    try {
+      // Fetch all tickets for the given user
+      const tickets = await prisma.ticket.findMany({
+        where: { userId },
+      });
+      return tickets;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch tickets for user: ${error.message}`);
+      } else {
+        throw new Error('Failed to fetch tickets for user: Unknown error');
       }
-    });
-    return tickets;
+    }
   }
 
   static async getUsersForEvent(eventId: string) {
-    const users = await prisma.ticket.findMany({
-      where: { eventId },
-      include: {
-        user: true,
-        event: true
+    try {
+      // Fetch all users for the given event
+      const users = await prisma.ticket.findMany({
+        where: { eventId },
+        include: { user: true },
+      });
+      return users.map(ticket => ticket.user);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch users for event: ${error.message}`);
+      } else {
+        throw new Error('Failed to fetch users for event: Unknown error');
       }
-    });
-    return users.map(ticket => ({
-      user: ticket.user,
-      ticketCount: ticket.ticketCount,
-      totalPrice: ticket.ticketCount * ticket.event.price
-    }));
+    }
   }
 
   static async getAllUsersWithTickets() {
-    const users = await prisma.user.findMany({
-      include: {
-        tickets: {
-          include: {
-            event: true
-          }
-        }
-      }
-    });
-    return users.map(user => ({
-      ...user,
-      tickets: user.tickets.map(ticket => ({
-        ...ticket,
-        totalPrice: ticket.ticketCount * ticket.event.price
-      }))
-    }));
-  }
-
-  private static async sendConfirmationEmail(to: string, name: string, ticketCount: number, totalAmount: number) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER!,
-        pass: process.env.EMAIL_PASS!,
-      },
-    });
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER!,
-      to,
-      subject: 'Ticket Purchase Confirmation',
-      text: `Dear ${name},\n\nThank you for your purchase! You have successfully bought ${ticketCount} tickets for a total amount of $${totalAmount.toFixed(2)}.\n\nBest regards,\nYour Event Team`,
-    };
-
     try {
-      await transporter.sendMail(mailOptions);
-      console.log('Email sent successfully');
+      // Fetch all users who have tickets
+      const tickets = await prisma.ticket.findMany({
+        include: { user: true },
+      });
+      const users = tickets.map(ticket => ticket.user);
+      return users;
     } catch (error) {
-      console.error('Error sending email:', error);
-      throw new Error('Failed to send confirmation email');
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch all users with tickets: ${error.message}`);
+      } else {
+        throw new Error('Failed to fetch all users with tickets: Unknown error');
+      }
     }
   }
 }

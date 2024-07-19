@@ -2,55 +2,44 @@
 @userId = 87654321-4321-4321-4321-210987654321
 
 ### Create Event
-POST http://localhost:3000/api/events
+POST http://localhost:3000/api/events/createEvent
 Content-Type: application/json
-Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjU5ODJjNi00ZDQ5LTQ2ZTEtYTY0OS1jZDAwNDA5YjY4MzciLCJpYXQiOjE3MjExMjI1MzksImV4cCI6MTcyMTEyNjEzOX0.lMLbidx6O2SLNsdz6qs_FK_9-6o56Yr0_sJvZ0HSIo8
 
 {
-  "title": "Concert",
+  "title": "Band Music",
   "description": "Live music event",
   "category": "Music",
-  "location": "Stadium",
-  "price": 50,
-  "ticketsAvailable": 100,
+  "location": "london",
+  "price": 2000,
+  "ticketsAvailable": 200,
   "date": "2024-12-31T23:59:59.000Z",
-  "imageUrl": "http://example.com/image.jpg"
+  "imageUrl": "https://media.istockphoto.com/id/1464613356/photo/singer-closing-his-eyes-while-performing-onstage-with-band.jpg?s=1024x1024&w=is&k=20&c=wqWIz_YQHpe1HFmzB_rUwtKjdF8kANBomblLxakc-ko="
 }
 
 ### Get All Events
-GET http://localhost:3000/api/events
+GET http://localhost:3000/api/events/getEvents
 
 ### Get Event by ID
-GET http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
+GET http://localhost:3000/api/events/getOne/0dcb5fec-847b-46f2-aff5-90372396d1df
 
 ### Update Event
-PUT http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
+PUT http://localhost:3000/api/events/update/0dcb5fec-847b-46f2-aff5-90372396d1df
 Content-Type: application/json
-Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjU5ODJjNi00ZDQ5LTQ2ZTEtYTY0OS1jZDAwNDA5YjY4MzciLCJpYXQiOjE3MjExMjI1MzksImV4cCI6MTcyMTEyNjEzOX0.lMLbidx6O2SLNsdz6qs_FK_9-6o56Yr0_sJvZ0HSIo8
+
 {
-  "title": "Updated Concert",
-  "description": "Updated live music event",
+  "title": "Rihanna band",
+  "description": "A grand celebration of operatic arias by opera stars.",
   "category": "Music",
-  "location": "Stadium",
+  "location": "Nairobi",
   "price": 60,
   "ticketsAvailable": 90,
   "date": "2024-12-31T23:59:59.000Z",
-  "imageUrl": "http://example.com/new-image.jpg"
+  "imageUrl": "https://media.istockphoto.com/id/1464613377/photo/band-performing-for-enthusiastic-audience.jpg?s=1024x1024&w=is&k=20&c=3OYxlMSxC-FTtIhVDShgl8jMmvVoIKEdu946Kf800nI="
 }
 
 ### Delete Event
-DELETE http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317
-Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjU5ODJjNi00ZDQ5LTQ2ZTEtYTY0OS1jZDAwNDA5YjY4MzciLCJpYXQiOjE3MjExMjI1MzksImV4cCI6MTcyMTEyNjEzOX0.lMLbidx6O2SLNsdz6qs_FK_9-6o56Yr0_sJvZ0HSIo8
+DELETE http://localhost:3000/api/events/delete/e38f3b68-0275-4ec5-a541-289d5218a135
 
-### Book Ticket
-POST http://localhost:3000/api/events/book
-Content-Type: application/json
-
-{
-  "eventId": "2bca9aa8-408c-4e8e-97c3-00fd49c2a317",
-  "userId": "35299e63-6fc7-4cb1-afc4-e67e1cea88c9",
-  "ticketCount": 2
-}
 
 ### Calculate Earnings
-GET http://localhost:3000/api/events/2bca9aa8-408c-4e8e-97c3-00fd49c2a317/earnings
+GET http://localhost:3000/api/events/earning/2bca9aa8-408c-4e8e-97c3-00fd49c2a317/earnings

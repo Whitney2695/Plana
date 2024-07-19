@@ -3,10 +3,10 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-  "email": "na@gmail.com",
+  "email": "whitneyjacks685@gmail.com",
   "password": "password123",
-  "name": "Navalia",
-  "phoneNumber": "0733436230",
+  "name": "jacks",
+  "phoneNumber": "077839130",
   "image": "avatar.jpg",
   "isAdmin": false,
   "isManager": false
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### Delete User by ID (DELETE /api/users/:id)
-DELETE http://localhost:3000/api/users/8b8de5bd-c363-45f6-a157-106b89add127
+DELETE http://localhost:3000/api/users/e2a2d75e-ac9b-455e-8dc9-76684e72c43b
 ### Get Only Users (GET /api/users/role/users)
 GET http://localhost:3000/api/users/role/users
 

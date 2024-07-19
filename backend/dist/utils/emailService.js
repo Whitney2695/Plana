@@ -20,7 +20,9 @@ function sendRegistrationEmail(_a) {
     return __awaiter(this, arguments, void 0, function* ({ email, name }) {
         try {
             const transporter = nodemailer_1.default.createTransport({
-                service: 'Gmail',
+                host: 'smtp.gmail.com',
+                port: 587, // Set the port to 587
+                secure: false, // Set secure to false
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASSWORD,
@@ -30,26 +32,19 @@ function sendRegistrationEmail(_a) {
                 from: process.env.EMAIL_USER,
                 to: email,
                 subject: 'Welcome to Event Plana!',
-                text: `Hello ${name},
-
-Welcome to Event Plana!
-
-We are thrilled to have you join our community of event enthusiasts. At Event Plana, we strive to bring you the best experiences and make your event planning journey seamless and enjoyable.
-
-Here are a few things you can look forward to: 
-- Explore a wide range of events happening around you
-- Seamlessly book tickets and manage your reservations
-- Stay updated with the latest event news and updates
-- Get personalized recommendations based on your interests
-
-We believe that every event should be memorable, and we are here to ensure you have the best experience possible.
-
-If you have any questions or need assistance, feel free to reach out to our support team at support@eventplana.com.
-
-Thank you for joining us, and we look forward to seeing you at our events!
-
-Best regards,
-The Event Plana Team`
+                html: `
+        <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; margin-left: 20px;">
+          <div style="background-color: black; padding: 20px; border-radius: 10px; display: inline-block;">
+            <h2 style="color: purple;">Hello ${name},</h2>
+            <p style="font-family: 'Times New Roman', Times, serif; color: red;">Welcome to Event Plana!</p>
+            <p style="font-family: Georgia, 'Times New Roman', Times, serif; color: green;">We are thrilled to have you join our community of event enthusiasts.</p>
+            <p style="font-family: Georgia, 'Times New Roman', Times, serif; color: blue;">Explore events, book tickets, and stay updated with the latest event news.</p>
+            <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; color: orange;">If you have any questions, reach out to our support team at <a href="mailto:support@eventplana.com" style="color: red;">support@eventplana.com</a>.</p>
+            <p style="color: black;">Thank you for joining us, and we look forward to seeing you at our events!</p>
+            <p>Best regards,<br><span style="color: purple;">The Event Plana Team</span></p>
+          </div>
+        </div>
+      `,
             };
             yield transporter.sendMail(mailOptions);
             console.log('Registration email sent successfully');

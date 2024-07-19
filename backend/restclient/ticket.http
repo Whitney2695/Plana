@@ -3,16 +3,16 @@ POST http://localhost:3000/tickets/buy
 Content-Type: application/json
 
 {
-  "userId": "5a48a5d7-b5c8-4709-9abd-18fd03e58cd1",
-  "eventId": "2bca9aa8-408c-4e8e-97c3-00fd49c2a317",
-  "ticketCount": 1
+  "userId": "b4cd8e79-bc6f-42fe-807a-0d70babe7da9",
+  "eventId": "0dcb5fec-847b-46f2-aff5-90372396d1df",
+  "ticketCount": 5
 }
 
 ### cancel ticket
-DELETE http://localhost:3000/tickets/cancel/fc208e31-7d72-4bfd-8a88-3178a22f20ac
+DELETE http://localhost:3000/tickets/cancel/f738ce9f-d7f8-4fb0-a747-1bb605cf22fe
 
 ### All tickets
-GET http://localhost:3000/tickets/user/5a48a5d7-b5c8-4709-9abd-18fd03e58cd1
+GET http://localhost:3000/tickets/user/76edcb07-913d-499c-97c4-4e2f7ba954d8
 
 ### Get users with details for specific event
 GET http://localhost:3000/tickets/event/2bca9aa8-408c-4e8e-97c3-00fd49c2a317/users
