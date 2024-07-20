@@ -29,7 +29,7 @@ class TicketController {
             const { ticketId } = req.params;
             try {
                 const canceledTicket = yield ticketService_1.TicketService.cancelTicket(ticketId);
-                res.json({ message: "Ticket successfully canceled." }); // Return success message
+                res.json({ message: 'Ticket successfully canceled.' });
             }
             catch (error) {
                 next(error);
@@ -65,6 +65,41 @@ class TicketController {
             try {
                 const users = yield ticketService_1.TicketService.getAllUsersWithTickets();
                 res.json(users);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    static getTotalTicketsForEvent(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { eventId } = req.params;
+            try {
+                const totalTickets = yield ticketService_1.TicketService.getTotalTicketsForEvent(eventId);
+                res.json({ totalTickets });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    static getTotalMoneyForEvent(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { eventId } = req.params;
+            try {
+                const totalMoney = yield ticketService_1.TicketService.getTotalMoneyForEvent(eventId);
+                res.json({ totalMoney });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    static getTotalMoneyForAllEvents(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const totalMoney = yield ticketService_1.TicketService.getTotalMoneyForAllEvents();
+                res.json({ totalMoney });
             }
             catch (error) {
                 next(error);

@@ -38,10 +38,16 @@ class EventController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const event = yield eventService.createEvent(req.body);
-                res.status(201).json(event);
+                res.status(201).json({ message: 'Event created successfully', event });
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                if (err.message === 'Event already exists') {
+                    res.status(400).json({ error: err.message });
+                }
+                else {
+                    res.status(500).json({ error: err.message });
+                }
             }
         });
     }
@@ -52,7 +58,8 @@ class EventController {
                 res.status(200).json(events);
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                res.status(500).json({ error: err.message });
             }
         });
     }
@@ -63,7 +70,8 @@ class EventController {
                 res.status(200).json(event);
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                res.status(500).json({ error: err.message });
             }
         });
     }
@@ -71,10 +79,11 @@ class EventController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const event = yield eventService.updateEvent(req.params.id, req.body);
-                res.status(200).json(event);
+                res.status(200).json({ message: 'Event updated successfully', event });
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                res.status(500).json({ error: err.message });
             }
         });
     }
@@ -82,10 +91,11 @@ class EventController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield eventService.deleteEvent(req.params.id);
-                res.status(204).end();
+                res.status(204).json({ message: 'Event deleted successfully' });
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                res.status(500).json({ error: err.message });
             }
         });
     }
@@ -94,10 +104,11 @@ class EventController {
             try {
                 const { eventId, userId, ticketCount } = req.body;
                 const booking = yield eventService.bookTicket(eventId, userId, ticketCount);
-                res.status(201).json(booking);
+                res.status(201).json({ message: 'Ticket booked successfully', booking });
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                res.status(500).json({ error: err.message });
             }
         });
     }
@@ -108,7 +119,20 @@ class EventController {
                 res.status(200).json({ totalEarnings });
             }
             catch (error) {
-                res.status(500).json({ error: error.message });
+                const err = error;
+                res.status(500).json({ error: err.message });
+            }
+        });
+    }
+    getTotalEvents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const totalEvents = yield eventService.getTotalEvents();
+                res.status(200).json({ totalEvents });
+            }
+            catch (error) {
+                const err = error;
+                res.status(500).json({ error: err.message });
             }
         });
     }

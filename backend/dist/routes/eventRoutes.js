@@ -13,4 +13,5 @@ eventRoutes.put('/update/:id', eventController_1.default.updateEvent);
 eventRoutes.delete('/delete/:id', eventController_1.default.deleteEvent);
 eventRoutes.post('/book/:id/book', eventController_1.default.bookTicket);
 eventRoutes.get('/earning/:id/earnings', eventController_1.default.calculateEarnings);
+eventRoutes.get('/totalEvents', eventController_1.default.getTotalEvents);
 exports.default = eventRoutes;

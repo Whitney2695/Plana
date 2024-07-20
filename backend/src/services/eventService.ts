@@ -11,6 +11,14 @@ export async function createEvent(data: {
   date: Date;
   imageUrl?: string;
 }) {
+  const existingEvent = await prisma.event.findFirst({
+    where: { title: data.title },
+  });
+
+  if (existingEvent) {
+    throw new Error('Event already exists');
+  }
+
   return await prisma.event.create({
     data,
   });
@@ -80,4 +88,8 @@ export async function calculateEarnings(eventId: string) {
   });
 
   return bookings.reduce((sum, booking) => sum + booking.totalPrice, 0);
+}
+
+export async function getTotalEvents() {
+  return await prisma.event.count();
 }

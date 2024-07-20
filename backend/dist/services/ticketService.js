@@ -1,5 +1,4 @@
 "use strict";
-// services/ticketService.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -17,21 +16,47 @@ class TicketService {
     static buyTicket(userId, eventId, ticketCount) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Create a new ticket entry in the database
-                const ticket = yield server_1.prisma.ticket.create({
-                    data: {
+                const event = yield server_1.prisma.event.findUnique({
+                    where: { id: eventId },
+                });
+                if (!event)
+                    throw new Error('Event not found');
+                if (event.ticketsAvailable < ticketCount)
+                    throw new Error('Not enough tickets available');
+                const existingTicket = yield server_1.prisma.ticket.findFirst({
+                    where: {
                         userId,
                         eventId,
-                        ticketCount,
                     },
                 });
-                // Calculate the total amount (e.g., $10 per ticket)
-                const totalAmount = ticketCount * 10;
-                // Fetch user email based on userId
+                let ticket;
+                if (existingTicket) {
+                    ticket = yield server_1.prisma.ticket.update({
+                        where: { id: existingTicket.id },
+                        data: {
+                            ticketCount: existingTicket.ticketCount + ticketCount,
+                        },
+                    });
+                }
+                else {
+                    ticket = yield server_1.prisma.ticket.create({
+                        data: {
+                            userId,
+                            eventId,
+                            ticketCount,
+                        },
+                    });
+                }
+                const totalAmount = event.price * ticketCount;
+                yield server_1.prisma.event.update({
+                    where: { id: eventId },
+                    data: {
+                        ticketsAvailable: event.ticketsAvailable - ticketCount,
+                    },
+                });
                 const user = yield server_1.prisma.user.findUnique({ where: { id: userId } });
                 if (!user)
                     throw new Error('User not found');
-                // Send email notification
                 yield ticketEmail_1.TicketEmailService.sendTicketPurchaseEmail(user.email, ticketCount, totalAmount);
                 return { ticket, totalAmount };
             }
@@ -48,9 +73,24 @@ class TicketService {
     static cancelTicket(ticketId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Delete the ticket entry from the database
+                const ticket = yield server_1.prisma.ticket.findUnique({
+                    where: { id: ticketId },
+                });
+                if (!ticket)
+                    throw new Error('Ticket not found');
+                const event = yield server_1.prisma.event.findUnique({
+                    where: { id: ticket.eventId },
+                });
+                if (!event)
+                    throw new Error('Event not found');
                 yield server_1.prisma.ticket.delete({
                     where: { id: ticketId },
+                });
+                yield server_1.prisma.event.update({
+                    where: { id: ticket.eventId },
+                    data: {
+                        ticketsAvailable: event.ticketsAvailable + ticket.ticketCount,
+                    },
                 });
                 return { message: 'Ticket successfully canceled.' };
             }
@@ -67,7 +107,6 @@ class TicketService {
     static getAllTicketsForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Fetch all tickets for the given user
                 const tickets = yield server_1.prisma.ticket.findMany({
                     where: { userId },
                 });
@@ -86,12 +125,11 @@ class TicketService {
     static getUsersForEvent(eventId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Fetch all users for the given event
-                const users = yield server_1.prisma.ticket.findMany({
+                const tickets = yield server_1.prisma.ticket.findMany({
                     where: { eventId },
                     include: { user: true },
                 });
-                return users.map(ticket => ticket.user);
+                return tickets.map(ticket => ticket.user);
             }
             catch (error) {
                 if (error instanceof Error) {
@@ -106,7 +144,6 @@ class TicketService {
     static getAllUsersWithTickets() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Fetch all users who have tickets
                 const tickets = yield server_1.prisma.ticket.findMany({
                     include: { user: true },
                 });
@@ -119,6 +156,117 @@ class TicketService {
                 }
                 else {
                     throw new Error('Failed to fetch all users with tickets: Unknown error');
+                }
+            }
+        });
+    }
+    static getTotalTicketsForEvent(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Fetch all tickets for the given event
+                const tickets = yield server_1.prisma.ticket.findMany({
+                    where: { eventId },
+                });
+                // Calculate total tickets sold for the event
+                const totalTickets = tickets.reduce((sum, ticket) => sum + ticket.ticketCount, 0);
+                return { totalTickets };
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(`Failed to fetch total tickets for event: ${error.message}`);
+                }
+                else {
+                    throw new Error('Failed to fetch total tickets for event: Unknown error');
+                }
+            }
+        });
+    }
+    static getTotalMoneyForEvent(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const event = yield server_1.prisma.event.findUnique({
+                    where: { id: eventId },
+                });
+                if (!event)
+                    throw new Error('Event not found');
+                const tickets = yield server_1.prisma.ticket.findMany({
+                    where: { eventId },
+                });
+                const totalMoney = tickets.reduce((sum, ticket) => sum + ticket.ticketCount * event.price, 0);
+                return { totalMoney };
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(`Failed to fetch total money for event: ${error.message}`);
+                }
+                else {
+                    throw new Error('Failed to fetch total money for event: Unknown error');
+                }
+            }
+        });
+    }
+    static getTotalMoneyForAllEvents() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const events = yield server_1.prisma.event.findMany({
+                    include: { tickets: true },
+                });
+                let totalMoney = 0;
+                events.forEach(event => {
+                    totalMoney += event.tickets.reduce((sum, ticket) => sum + ticket.ticketCount * event.price, 0);
+                });
+                return { totalMoney };
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(`Failed to fetch total money for all events: ${error.message}`);
+                }
+                else {
+                    throw new Error('Failed to fetch total money for all events: Unknown error');
+                }
+            }
+        });
+    }
+    static calculateTotalRevenue() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const events = yield server_1.prisma.event.findMany({
+                    include: { tickets: true },
+                });
+                let totalRevenue = 0;
+                events.forEach(event => {
+                    totalRevenue += event.tickets.reduce((sum, ticket) => sum + ticket.ticketCount * event.price, 0);
+                });
+                return { totalRevenue };
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(`Failed to calculate total revenue: ${error.message}`);
+                }
+                else {
+                    throw new Error('Failed to calculate total revenue: Unknown error');
+                }
+            }
+        });
+    }
+    static calculateEventRevenue(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const event = yield server_1.prisma.event.findUnique({
+                    where: { id: eventId },
+                    include: { tickets: true },
+                });
+                if (!event)
+                    throw new Error('Event not found');
+                const totalRevenue = event.tickets.reduce((sum, ticket) => sum + ticket.ticketCount * event.price, 0);
+                return { totalRevenue };
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(`Failed to calculate event revenue: ${error.message}`);
+                }
+                else {
+                    throw new Error('Failed to calculate event revenue: Unknown error');
                 }
             }
         });

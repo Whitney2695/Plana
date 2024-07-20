@@ -1,22 +1,27 @@
-### buy ticket
+### Buy or update ticket
 POST http://localhost:3000/tickets/buy
 Content-Type: application/json
 
 {
   "userId": "b4cd8e79-bc6f-42fe-807a-0d70babe7da9",
-  "eventId": "0dcb5fec-847b-46f2-aff5-90372396d1df",
+  "eventId": "a67f3f7d-2136-4916-958d-5ca9fd746ed5",
   "ticketCount": 5
 }
 
-### cancel ticket
-DELETE http://localhost:3000/tickets/cancel/f738ce9f-d7f8-4fb0-a747-1bb605cf22fe
+### Cancel ticket
+DELETE http://localhost:3000/tickets/cancel/fe92fae4-5b56-4a35-8d48-9393fd2255c1
 
-### All tickets
-GET http://localhost:3000/tickets/user/76edcb07-913d-499c-97c4-4e2f7ba954d8
+### Get all tickets for a user
+GET http://localhost:3000/tickets/user/b4cd8e79-bc6f-42fe-807a-0d70babe7da9
 
-### Get users with details for specific event
-GET http://localhost:3000/tickets/event/2bca9aa8-408c-4e8e-97c3-00fd49c2a317/users
+### Get users with details for a specific event
+GET http://localhost:3000/tickets/event/00b83e33-3b37-428b-822d-b795ed37c213/users
 
+### Get all users with tickets
+GET http://localhost:3000/tickets/users
 
-# ### Get all users with tickets
-# GET http://localhost:3000/tickets/users
+### Calculate total money for all events
+GET http://localhost:3000/tickets/total-money
+
+### Calculate total money for a specific event
+GET http://localhost:3000/tickets/event/a67f3f7d-2136-4916-958d-5ca9fd746ed5/total-money

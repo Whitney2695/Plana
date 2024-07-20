@@ -3,9 +3,9 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-  "email": "whitneyjacks685@gmail.com",
+  "email": "gamesmy177@gmail.com",
   "password": "password123",
-  "name": "jacks",
+  "name": "Daniel",
   "phoneNumber": "077839130",
   "image": "avatar.jpg",
   "isAdmin": false,

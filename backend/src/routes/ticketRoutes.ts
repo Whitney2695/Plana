@@ -18,4 +18,13 @@ router.get('/event/:eventId/users', TicketController.getUsersForEvent);
 // Route to get all users with tickets
 router.get('/users', TicketController.getAllUsersWithTickets);
 
+// Route to get total tickets for a specific event
+router.get('/event/:eventId/total-tickets', TicketController.getTotalTicketsForEvent);
+
+// Route to get total money for a specific event
+router.get('/event/:eventId/total-money', TicketController.getTotalMoneyForEvent);
+
+// Route to get total money for all events
+router.get('/total-money', TicketController.getTotalMoneyForAllEvents);
+
 export default router;

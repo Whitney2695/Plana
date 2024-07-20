@@ -36,8 +36,9 @@ class AuthService {
             if (!passwordMatch) {
                 throw new Error('Invalid password');
             }
-            // Generate JWT token
-            const token = jsonwebtoken_1.default.sign({ userId: user.id }, jwtSecret, { expiresIn: '1h' });
+            // Generate JWT token with user details
+            const tokenPayload = { userId: user.id, email: user.email, name: user.name, /* add other user details as needed */ };
+            const token = jsonwebtoken_1.default.sign(tokenPayload, jwtSecret, { expiresIn: '1h' });
             return { token, user };
         });
     }

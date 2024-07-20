@@ -18,7 +18,7 @@ export class TicketController {
 
     try {
       const canceledTicket = await TicketService.cancelTicket(ticketId);
-      res.json({ message: "Ticket successfully canceled." }); // Return success message
+      res.json({ message: 'Ticket successfully canceled.' });
     } catch (error) {
       next(error);
     }
@@ -50,6 +50,37 @@ export class TicketController {
     try {
       const users = await TicketService.getAllUsersWithTickets();
       res.json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getTotalTicketsForEvent(req: Request, res: Response, next: NextFunction) {
+    const { eventId } = req.params;
+
+    try {
+      const totalTickets = await TicketService.getTotalTicketsForEvent(eventId);
+      res.json({ totalTickets });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getTotalMoneyForEvent(req: Request, res: Response, next: NextFunction) {
+    const { eventId } = req.params;
+
+    try {
+      const totalMoney = await TicketService.getTotalMoneyForEvent(eventId);
+      res.json({ totalMoney });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getTotalMoneyForAllEvents(req: Request, res: Response, next: NextFunction) {
+    try {
+      const totalMoney = await TicketService.getTotalMoneyForAllEvents();
+      res.json({ totalMoney });
     } catch (error) {
       next(error);
     }

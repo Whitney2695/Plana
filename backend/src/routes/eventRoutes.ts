@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import eventController from '../controller/eventController';
-import { authMiddleware } from '../middleware/authMiddleware';
 
 const eventRoutes = Router();
 
@@ -11,5 +10,6 @@ eventRoutes.put('/update/:id', eventController.updateEvent);
 eventRoutes.delete('/delete/:id', eventController.deleteEvent);
 eventRoutes.post('/book/:id/book', eventController.bookTicket);
 eventRoutes.get('/earning/:id/earnings', eventController.calculateEarnings);
+eventRoutes.get('/totalEvents', eventController.getTotalEvents);
 
 export default eventRoutes;

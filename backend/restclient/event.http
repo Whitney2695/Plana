@@ -6,8 +6,8 @@ POST http://localhost:3000/api/events/createEvent
 Content-Type: application/json
 
 {
-  "title": "Band Music",
-  "description": "Live music event",
+  "title": " slumber party",
+  "description": "party like no other",
   "category": "Music",
   "location": "london",
   "price": 2000,
@@ -43,3 +43,6 @@ DELETE http://localhost:3000/api/events/delete/e38f3b68-0275-4ec5-a541-289d5218a
 
 ### Calculate Earnings
 GET http://localhost:3000/api/events/earning/2bca9aa8-408c-4e8e-97c3-00fd49c2a317/earnings
+
+### get total events
+GET http://localhost:3000/api/events/totalEvents

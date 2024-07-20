@@ -9,11 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateEarnings = exports.bookTicket = exports.deleteEvent = exports.updateEvent = exports.getEventById = exports.getAllEvents = exports.createEvent = void 0;
+exports.getTotalEvents = exports.calculateEarnings = exports.bookTicket = exports.deleteEvent = exports.updateEvent = exports.getEventById = exports.getAllEvents = exports.createEvent = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function createEvent(data) {
     return __awaiter(this, void 0, void 0, function* () {
+        const existingEvent = yield prisma.event.findFirst({
+            where: { title: data.title },
+        });
+        if (existingEvent) {
+            throw new Error('Event already exists');
+        }
         return yield prisma.event.create({
             data,
         });
@@ -85,3 +91,9 @@ function calculateEarnings(eventId) {
     });
 }
 exports.calculateEarnings = calculateEarnings;
+function getTotalEvents() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield prisma.event.count();
+    });
+}
+exports.getTotalEvents = getTotalEvents;
