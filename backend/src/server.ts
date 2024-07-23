@@ -43,10 +43,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/events', eventRoutes); // Use eventRoutes for /api/events endpoint
-
+app.use('/api/events', eventRoutes);
 app.use('/tickets', ticketRoutes);
 app.use('/api/bookings', bookingRoutes);
+
+// Upload endpoint
+app.post('/api/events/upload', upload.single('file'), (req: Request, res: Response) => {
+    if (!req.file) {
+        return res.status(400).send({ message: 'No file uploaded.' });
+    }
+    res.status(200).send({ imageUrl: `/uploads/${req.file.filename}` });
+});
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

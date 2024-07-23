@@ -6,7 +6,7 @@ POST http://localhost:3000/api/events/createEvent
 Content-Type: application/json
 
 {
-  "title": " slumber party",
+  "title": "  party",
   "description": "party like no other",
   "category": "Music",
   "location": "london",
@@ -32,9 +32,9 @@ Content-Type: application/json
   "category": "Music",
   "location": "Nairobi",
   "price": 60,
-  "ticketsAvailable": 90,
+  "ticketsAvailable": 40,
   "date": "2024-12-31T23:59:59.000Z",
-  "imageUrl": "https://media.istockphoto.com/id/1464613377/photo/band-performing-for-enthusiastic-audience.jpg?s=1024x1024&w=is&k=20&c=3OYxlMSxC-FTtIhVDShgl8jMmvVoIKEdu946Kf800nI="
+  "imageUrl": "https://imgs.search.brave.com/J0lsu5-ubwQwX8N3LHRSZGe1V-5SBZBgA6h7yrf5dj0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMudm9ndWUuY29t/L3Bob3Rvcy82NTdh/MGZiMzJiMTkxZGRh/Y2VhZDEzZTUvNDoz/L3dfMTYwMCxjX2xp/bWl0L0dldHR5SW1h/Z2VzLTE0NjU1ODQ3/MzMuanBlZw"
 }
 
 ### Delete Event

@@ -17,23 +17,15 @@ export class TicketService {
         },
       });
 
-      let ticket;
-      if (existingTicket) {
-        ticket = await prisma.ticket.update({
-          where: { id: existingTicket.id },
-          data: {
-            ticketCount: existingTicket.ticketCount + ticketCount,
-          },
-        });
-      } else {
-        ticket = await prisma.ticket.create({
-          data: {
-            userId,
-            eventId,
-            ticketCount,
-          },
-        });
-      }
+      if (existingTicket) throw new Error('Ticket already bought for this event');
+
+      const ticket = await prisma.ticket.create({
+        data: {
+          userId,
+          eventId,
+          ticketCount,
+        },
+      });
 
       const totalAmount = event.price * ticketCount;
 
@@ -55,6 +47,46 @@ export class TicketService {
         throw new Error(`Failed to buy ticket: ${error.message}`);
       } else {
         throw new Error('Failed to buy ticket: Unknown error');
+      }
+    }
+  }
+
+  static async updateTicket(ticketId: string, ticketCount: number) {
+    try {
+      const ticket = await prisma.ticket.findUnique({
+        where: { id: ticketId },
+      });
+      if (!ticket) throw new Error('Ticket not found');
+
+      const event = await prisma.event.findUnique({
+        where: { id: ticket.eventId },
+      });
+      if (!event) throw new Error('Event not found');
+
+      const newTicketCount = ticket.ticketCount + ticketCount;
+
+      if (newTicketCount < 0) throw new Error('Cannot reduce ticket count below zero');
+
+      const updatedTicket = await prisma.ticket.update({
+        where: { id: ticketId },
+        data: {
+          ticketCount: newTicketCount,
+        },
+      });
+
+      await prisma.event.update({
+        where: { id: ticket.eventId },
+        data: {
+          ticketsAvailable: event.ticketsAvailable - ticketCount,
+        },
+      });
+
+      return updatedTicket;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to update ticket: ${error.message}`);
+      } else {
+        throw new Error('Failed to update ticket: Unknown error');
       }
     }
   }
@@ -96,6 +128,9 @@ export class TicketService {
     try {
       const tickets = await prisma.ticket.findMany({
         where: { userId },
+        include: {
+          event: true, // Fetch the associated event details
+        },
       });
       return tickets;
     } catch (error: unknown) {
@@ -106,6 +141,7 @@ export class TicketService {
       }
     }
   }
+  
 
   static async getUsersForEvent(eventId: string) {
     try {
@@ -126,10 +162,33 @@ export class TicketService {
   static async getAllUsersWithTickets() {
     try {
       const tickets = await prisma.ticket.findMany({
-        include: { user: true },
+        include: {
+          user: true,
+          event: true, // Ensure event details are included
+        },
       });
-      const users = tickets.map(ticket => ticket.user);
-      return users;
+  
+      const usersWithTickets = tickets.map(ticket => {
+        const totalAmount = ticket.ticketCount * ticket.event.price;
+        
+        return {
+          user: ticket.user,
+          ticketDetails: {
+            id: ticket.id,
+            eventId: ticket.eventId,
+            ticketCount: ticket.ticketCount,
+            event: {
+              id: ticket.event.id,
+              title: ticket.event.title,
+              description: ticket.event.description,
+              price: ticket.event.price,
+            },
+            totalAmount, // Add totalAmount to the ticketDetails
+          },
+        };
+      });
+  
+      return usersWithTickets;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`Failed to fetch all users with tickets: ${error.message}`);
@@ -138,14 +197,13 @@ export class TicketService {
       }
     }
   }
+  
 
   static async getTotalTicketsForEvent(eventId: string) {
     try {
-      // Fetch all tickets for the given event
       const tickets = await prisma.ticket.findMany({
         where: { eventId },
       });
-      // Calculate total tickets sold for the event
       const totalTickets = tickets.reduce((sum, ticket) => sum + ticket.ticketCount, 0);
       return { totalTickets };
     } catch (error: unknown) {
@@ -208,48 +266,23 @@ export class TicketService {
   }
 
   static async calculateTotalRevenue() {
-    try {
-      const events = await prisma.event.findMany({
-        include: { tickets: true },
-      });
-
-      let totalRevenue = 0;
-      events.forEach(event => {
-        totalRevenue += event.tickets.reduce(
-          (sum, ticket) => sum + ticket.ticketCount * event.price,
-          0
-        );
-      });
-
-      return { totalRevenue };
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to calculate total revenue: ${error.message}`);
-      } else {
-        throw new Error('Failed to calculate total revenue: Unknown error');
-      }
-    }
+    return this.getTotalMoneyForAllEvents(); // Reusing the existing function
   }
 
   static async calculateEventRevenue(eventId: string) {
+    return this.getTotalMoneyForEvent(eventId); // Reusing the existing function
+  }
+
+  static async getTotalTicketsForAllEvents() {
     try {
-      const event = await prisma.event.findUnique({
-        where: { id: eventId },
-        include: { tickets: true },
-      });
-      if (!event) throw new Error('Event not found');
-
-      const totalRevenue = event.tickets.reduce(
-        (sum, ticket) => sum + ticket.ticketCount * event.price,
-        0
-      );
-
-      return { totalRevenue };
+      const tickets = await prisma.ticket.findMany();
+      const totalTickets = tickets.reduce((sum, ticket) => sum + ticket.ticketCount, 0);
+      return { totalTickets };
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw new Error(`Failed to calculate event revenue: ${error.message}`);
+        throw new Error(`Failed to fetch total tickets for all events: ${error.message}`);
       } else {
-        throw new Error('Failed to calculate event revenue: Unknown error');
+        throw new Error('Failed to fetch total tickets for all events: Unknown error');
       }
     }
   }

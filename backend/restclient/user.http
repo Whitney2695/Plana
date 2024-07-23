@@ -3,7 +3,7 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-  "email": "gamesmy177@gmail.com",
+  "email": "games@gmail.com",
   "password": "password123",
   "name": "Daniel",
   "phoneNumber": "077839130",
@@ -19,14 +19,14 @@ GET http://localhost:3000/api/users
 GET http://localhost:3000/api/users/8b8de5bd-c363-45f6-a157-106b89add127
 
 ### Update User by ID (PUT /api/users/:id)
-PUT http://localhost:3000/api/users/d5574577-940a-4dd1-835a-162c802fcbec
+PUT http://localhost:3000/api/users/35299e63-6fc7-4cb1-afc4-e67e1cea88c9
 Content-Type: application/json
 
 {
   "email": "updated.john.doe@example.com",
   "name": "Updated John Doe",
   "phoneNumber": "+9876543210",
-  "isAdmin": true,
+  "isAdmin": false,
   "isManager": false
 }
 

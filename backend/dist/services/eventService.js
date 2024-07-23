@@ -14,6 +14,8 @@ const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 function createEvent(data) {
     return __awaiter(this, void 0, void 0, function* () {
+        // Convert the date to ISO-8601 format
+        const isoDate = new Date(data.date).toISOString();
         const existingEvent = yield prisma.event.findFirst({
             where: { title: data.title },
         });
@@ -21,7 +23,7 @@ function createEvent(data) {
             throw new Error('Event already exists');
         }
         return yield prisma.event.create({
-            data,
+            data: Object.assign(Object.assign({}, data), { date: isoDate }),
         });
     });
 }
@@ -42,9 +44,11 @@ function getEventById(eventId) {
 exports.getEventById = getEventById;
 function updateEvent(eventId, data) {
     return __awaiter(this, void 0, void 0, function* () {
+        // Convert the date to ISO-8601 format
+        const isoDate = new Date(data.date).toISOString();
         return yield prisma.event.update({
             where: { id: eventId },
-            data,
+            data: Object.assign(Object.assign({}, data), { date: isoDate }),
         });
     });
 }

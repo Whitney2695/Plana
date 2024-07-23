@@ -11,6 +11,9 @@ export async function createEvent(data: {
   date: Date;
   imageUrl?: string;
 }) {
+  // Convert the date to ISO-8601 format
+  const isoDate = new Date(data.date).toISOString();
+
   const existingEvent = await prisma.event.findFirst({
     where: { title: data.title },
   });
@@ -20,7 +23,10 @@ export async function createEvent(data: {
   }
 
   return await prisma.event.create({
-    data,
+    data: {
+      ...data,
+      date: isoDate, // Ensure the date is correctly formatted
+    },
   });
 }
 
@@ -44,9 +50,15 @@ export async function updateEvent(eventId: string, data: {
   date: Date;
   imageUrl?: string;
 }) {
+  // Convert the date to ISO-8601 format
+  const isoDate = new Date(data.date).toISOString();
+
   return await prisma.event.update({
     where: { id: eventId },
-    data,
+    data: {
+      ...data,
+      date: isoDate, // Ensure the date is correctly formatted
+    },
   });
 }
 
