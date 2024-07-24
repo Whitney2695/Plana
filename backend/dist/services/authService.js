@@ -37,9 +37,14 @@ class AuthService {
                 throw new Error('Invalid password');
             }
             // Generate JWT token with user details
-            const tokenPayload = { userId: user.id, email: user.email, name: user.name, /* add other user details as needed */ };
+            const tokenPayload = { userId: user.id, email: user.email, name: user.name /* add other user details as needed */ };
             const token = jsonwebtoken_1.default.sign(tokenPayload, jwtSecret, { expiresIn: '1h' });
-            return { token, user };
+            // Return token, user data, and a success message
+            return {
+                token,
+                user,
+                message: 'Logged in successfully',
+            };
         });
     }
 }

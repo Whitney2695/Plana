@@ -9,10 +9,10 @@ export class AuthController {
 
     try {
       // Authenticate user using AuthService
-      const { token, user } = await authService.loginUser(email, password);
+      const { token, user, message } = await authService.loginUser(email, password);
 
-      // Return token and user information
-      res.json({ token, user });
+
+      res.json({ token, user, message });
     } catch (error) {
       if (error instanceof Error) {
         console.error('Login error:', error.message);

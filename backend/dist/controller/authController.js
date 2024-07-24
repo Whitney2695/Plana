@@ -18,9 +18,8 @@ class AuthController {
             const { email, password } = req.body;
             try {
                 // Authenticate user using AuthService
-                const { token, user } = yield authService.loginUser(email, password);
-                // Return token and user information
-                res.json({ token, user });
+                const { token, user, message } = yield authService.loginUser(email, password);
+                res.json({ token, user, message });
             }
             catch (error) {
                 if (error instanceof Error) {

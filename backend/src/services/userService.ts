@@ -10,7 +10,7 @@ export class UserService {
     image?: string;
     isAdmin?: boolean;
     isManager?: boolean;
-  }) {
+  }): Promise<{ user: any; message: string }> {
     try {
       // Check if the email already exists
       const existingUser = await prisma.user.findUnique({
@@ -36,7 +36,11 @@ export class UserService {
         },
       });
 
-      return newUser;
+      // Return user data along with a success message
+      return {
+        user: newUser,
+        message: 'User created successfully',
+      };
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to create user: ${error.message}`);

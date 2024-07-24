@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const jwtSecret = 'pass'; // Replace with your actual secret
 
 export class AuthService {
-  async loginUser(email: string, password: string): Promise<any> {
+  async loginUser(email: string, password: string): Promise<{ token: string; user: any; message: string }> {
     // Find user by email
     const user = await prisma.user.findUnique({ where: { email: email } });
 
@@ -28,9 +28,14 @@ export class AuthService {
     }
 
     // Generate JWT token with user details
-    const tokenPayload = { userId: user.id, email: user.email, name: user.name, /* add other user details as needed */ };
+    const tokenPayload = { userId: user.id, email: user.email, name: user.name /* add other user details as needed */ };
     const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '1h' });
 
-    return { token, user };
+    // Return token, user data, and a success message
+    return {
+      token,
+      user,
+      message: 'Logged in successfully',
+    };
   }
 }

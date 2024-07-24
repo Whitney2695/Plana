@@ -39,7 +39,11 @@ class UserService {
                         isManager: data.isManager || false,
                     },
                 });
-                return newUser;
+                // Return user data along with a success message
+                return {
+                    user: newUser,
+                    message: 'User created successfully',
+                };
             }
             catch (error) {
                 if (error instanceof Error) {
